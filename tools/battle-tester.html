@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Goldhaven skill guide: multipliers, mechanisms, class and beast effects, battle order, damage formula and settlement notes." />
+  <title>Goldhaven | Skill Guide</title>
+
+  <link rel="icon" href="../favicon.ico" sizes="any" />
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body data-page="skills">
+  <div class="paper-grain" aria-hidden="true"></div><div class="ink-wash wash-a" aria-hidden="true"></div><div class="ink-wash wash-b" aria-hidden="true"></div>
+  <header class="site-header"><nav class="nav shell" aria-label="Main navigation"><a class="brand" href="../index.html"><img src="../assets/goldhaven-logo-512.png" alt="" /><span>Goldhaven</span></a><button class="menu-toggle" id="menuToggle" type="button">☰</button><div class="nav-links" id="navLinks"><a href="../index.html" data-nav="home" data-i18n="navHome">Home</a><a href="../app.html" data-nav="app" data-i18n="navMintStake">Mint & Stake</a><a href="../arena.html" data-nav="arena" data-i18n="navArena">Arena</a><a href="../market.html" data-nav="market" data-i18n="navMarket">NFT Market</a><a href="battle-tester.html" data-nav="skills" data-i18n="navTester">Skill Guide</a></div><div class="nav-actions"><button class="lang-toggle" id="langToggle" type="button">中文</button><button class="wallet" id="connectWallet" type="button" data-i18n="connectWallet">Connect Wallet</button></div></nav></header>
+
+  <main class="page-main shell skill-guide-page">
+    <section class="page-title reveal">
+      <div class="eyebrow" data-skill-i18n="eyebrow">SKILL GUIDE / 技能说明</div>
+      <h1 data-skill-i18n="title">Goldhaven battle skills, multipliers, and mechanisms.</h1>
+      <p data-skill-i18n="lead">A bilingual reference for skill timing, damage multipliers, mechanism tags, beast bonds, class bonuses, and front-end battle replay rules.</p>
+    </section>
+
+    <section class="skill-guide-tabs reveal" aria-label="Skill guide sections">
+      <a href="#flow" data-skill-i18n="tabFlow">Flow</a>
+      <a href="#mechanisms" data-skill-i18n="tabMechanisms">Mechanisms</a>
+      <a href="#skills" data-skill-i18n="tabSkills">Skill tables</a>
+      <a href="#special" data-skill-i18n="tabSpecial">Special rules</a>
+      <a href="#fates" data-skill-i18n="tabFates">Fates</a>
+    </section>
+
+    <section id="skillGuideContent" class="skill-guide-content"></section>
+  </main>
+
+  <footer class="footer shell"><div><b>Goldhaven</b><p>Goldhaven on-chain protocol interface.</p></div><div class="footer-links"><a id="footerTwitter" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X</a><a id="footerTelegram" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a><a href="battle-tester.html">Skill Guide</a></div></footer>
+  <script src="../app.js"></script>
+  <script>
+  (()=>{
+    const $ = (s, r=document) => r.querySelector(s);
+    const esc = (v)=>String(v ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const getLang = () => (localStorage.getItem('goldhavenLang') || document.documentElement.dataset.lang || 'en').startsWith('zh') ? 'zh' : 'en';
+    const pct = n => `${Math.round(n*100)}%`;
+    const mechLabels = {
+      combo:['Combo','连击'], antiCombo:['Anti-combo','抗连击'], initiative:['Initiative','先手'], blockInitiative:['Block initiative','封锁先手'], burst:['Burst','爆发'], antiBurst:['Anti-burst','抗爆发'], execute:['Execute','斩杀'], blockLife:['Block lifesave','封锁保命'], conditionalPower:['Conditional power','条件增伤'], counter:['Counter','盾反'], counterControl:['Counter control','盾反控制'], trueDamage:['True damage','真实伤害'], shield:['Shield','护盾'], blockDefense:['Block defense','破防/破盾'], restore:['Restore / lifesteal','回复/吸血'], blockHeal:['Block heal','封锁回复'], curse:['Curse','咒印'], blockCurse:['Block curse','封锁咒印'], curseBurst:['Curse burst','咒爆'], speedUp:['Speed up','提速'], slow:['Slow','减速'], antiSlow:['Anti-slow','抗减速'], weaken:['Weaken','降攻'], cleanse:['Cleanse','净化'], delayShift:['Delay / shift','延后/错位'], antiDelayShift:['Anti-delay','抗延后/错位'], blockBeast:['Block beast','封锁神兽'], lifeSave:['Life save','保命'], tieBias:['Tie bias','残局优势'], beastBond:['Beast bond','神兽适配']
+    };
+    const mechDesc = {
+      combo:['Adds a chase hit or second strike after main damage.','主伤害后追加追击或第二段伤害。'], antiCombo:['Cancels one chase hit or second strike.','抵消一次追击或第二段伤害。'], initiative:['Rewards speed/first-move advantage. Yingren speed gap scaling uses √speed gap.','代表先手或速度优势收益；影刃速度差加成按 √速度差 结算。'], blockInitiative:['Blocks the target’s next initiative or speed-advantage mechanism.','封锁目标下一次先手或速度优势机制。'], burst:['A high front-loaded damage pattern such as first cast, starter burst, or first-round burst.','第1轮属性爆发、起手爆发、首次释放爆发等前置爆发收益。'], antiBurst:['Cancels one burst benefit.','抵消一次爆发收益。'], execute:['Increases damage against low-HP targets.','目标低血时提高伤害。'], blockLife:['Blocks effects such as staying at 1 HP or delayed death.','封锁保留1血、死亡延后等保命机制。'], conditionalPower:['Damage increases when a condition is met.','满足低血反杀、盾反后强化等条件时提高倍率。'], counter:['Prepares a counter on next hit.','下次受击时反击攻击者。'], counterControl:['Cancels or disables counter effects.','化解盾反或让目标盾反失效。'], trueDamage:['Adds damage that bypasses the normal defense formula.','追加不走普通防御减伤公式的穿透/真实伤害。'], shield:['Gains shield; shield absorbs damage before HP.','获得护盾，护盾先吸收伤害再扣生命。'], blockDefense:['Blocks defense, shield, formation, or clears current shield.','封锁防御、护盾、法阵；部分技能会清除当前护盾。'], restore:['Restores HP or lifesteals from damage dealt.','直接回复生命或按造成伤害吸血。'], blockHeal:['Blocks healing or lifesteal.','封锁目标回复或吸血机制。'], curse:['Applies curse stacks. Several stacks can trigger curse burst.','给目标叠咒印，达到层数后可触发咒爆。'], blockCurse:['Blocks curse stacking and suppresses lifesteal.','封锁目标咒印叠层，并压制吸血。'], curseBurst:['Deals true damage based on curse stacks, then clears them.','按咒印层数造成真实伤害并结算御魂咒系收益。'], speedUp:['Raises own speed for initiative and speed-gap benefits.','提升自身速度，用于抢先手和触发速度优势收益。'], slow:['Reduces target speed, weakening speed-gap builds and enabling Fangshi follow-up.','降低目标速度，压制高速卡，并提高方士水势追击收益。'], antiSlow:['Immune to one slow effect.','免疫一次减速。'], weaken:['Reduces target attack.','降低目标攻击力。'], cleanse:['Removes or prevents debuffs, curse, or delayed mechanisms.','净化削弱、咒印或延后/封锁。'], delayShift:['Delays or misaligns the target’s next extra mechanism.','让目标下一次附加机制失效、延后或错位。'], antiDelayShift:['Cancels one delay/shift effect.','抵消一次延后/错位。'], blockBeast:['Target’s next beast skill only deals damage; beast effects are skipped.','目标下次神兽技能只结算伤害，不结算神兽特效。'], lifeSave:['Delays death or leaves the card at 1 HP.','死亡延后或保留1血。'], tieBias:['Improves end-of-12-round tie judgment.','12轮未分胜负时提高残局判定优势。'], beastBond:['Carrier tag for beast-specific effects and best-pair bonuses.','承载七大神兽的通用效果与最佳适配效果。']
+    };
+    const T = {
+      en:{ eyebrow:'SKILL GUIDE', title:'Goldhaven battle skills, multipliers, and mechanisms.', lead:'A bilingual reference for skill timing, damage multipliers, mechanism tags, beast bonds, class bonuses, and front-end battle replay rules.', tabFlow:'Flow', tabMechanisms:'Mechanisms', tabSkills:'Skill tables', tabSpecial:'Special rules', tabFates:'Fates', phaseTitle:'Battle flow and release timing', phaseLead:'A battle has up to 12 rounds. Every four rounds repeat the same cycle.', phaseCols:['Rounds','Skill type','Settlement notes'], formulaTitle:'Damage formula and multiplier order', formulaLead:'Normal damage is calculated from attack, defense and the final skill multiplier. Shield absorbs damage before HP. True damage and curse burst bypass the normal defense formula.', mechanismTitle:'30 core mechanisms', mechanismLead:'Active skills use compact mechanism tags. Counters are attached to concrete skills rather than global class-vs-class damage bonuses.', classTitle:'Class stat bonuses', classLead:'Class fixes the element and provides stat bonuses on top of base card generation.', classCols:['Class','Element','Best beast','ATK','DEF','SPD','HP','Role'], skillTableCols:['Owner','Skill','Multiplier','Mechanisms','Effect'], attrTitle:'Attribute skills', attrLead:'Released on rounds 1 / 5 / 9. Each card gets one attribute skill from its fixed class element.', starterTitle:'Starter skills', starterLead:'Released on rounds 2 / 6 / 10. Starter skills define class rhythm and early pressure.', beastTitle:'Beast skills', beastLead:'Released on rounds 3 / 7 / 11. Beast skills include general beast effects and best-pair effects.', finisherTitle:'Finishers', finisherLead:'Released on rounds 4 / 8 / 12. Finishers usually decide elimination rounds through burst, execute, sustain or late-round advantage.', specialTitle:'Special multiplier and mechanism rules', specialLead:'These are the most important conditional rules from the battle tester. Final on-chain winners still come from Arena verification.', beastAdaptTitle:'Beast bond parameters', beastAdaptLead:'Best-pair effects are triggered by class × beast pairing. Funding amount does not unlock additional skill tiers.', fatesTitle:'Fate passives', fatesLead:'Fates are passive card traits generated with the NFT. They are not active skill tags.', amountTitle:'Funding and staking formulas', amountLead:'Funding changes stats only. It does not create skill tiers or hidden multiplier brackets.', owner:'Owner', attr:'Attribute', starter:'Starter', beast:'Beast', finisher:'Finisher', fateTypeFlag:'Flag', fateTypeStat:'Stat change', details:'Details', releaseNote:'The page is a reference and replay guide. It does not submit transactions or change battle results.' },
+      zh:{ eyebrow:'技能说明', title:'Goldhaven 技能倍率、机制与结算说明。', lead:'本页整理技能释放顺序、技能倍率、机制标签、神兽适配、职业属性和前端复现战斗结算所需规则。', tabFlow:'流程', tabMechanisms:'机制', tabSkills:'技能表', tabSpecial:'特殊规则', tabFates:'命格', phaseTitle:'战斗流程与技能释放顺序', phaseLead:'单场最多 12 轮，每 4 轮循环一次固定释放顺序。', phaseCols:['轮次','技能类型','结算说明'], formulaTitle:'伤害公式与倍率结算顺序', formulaLead:'普通伤害由攻击、防御和最终技能倍率计算；护盾先吸收，剩余伤害扣生命。真实伤害和咒爆跳过普通防御减伤公式。', mechanismTitle:'30 个核心机制', mechanismLead:'主动技能只挂紧凑机制标签。克制关系落在具体技能上，不再使用职业对阵全局增减伤害。', classTitle:'职业属性加成', classLead:'职业固定元素，并在卡片基础生成公式上提供属性加成。', classCols:['职业','固定属性','最佳神兽','攻击','防御','速度','生命','定位'], skillTableCols:['归属','技能','倍率','机制','说明'], attrTitle:'属性技能', attrLead:'第 1 / 5 / 9 轮释放。每张卡从职业固定属性池中获得 1 个属性技能。', starterTitle:'职业起手技能', starterLead:'第 2 / 6 / 10 轮释放。起手技能体现职业节奏和前期压制。', beastTitle:'神兽技能', beastLead:'第 3 / 7 / 11 轮释放。包含神兽通用效果和职业最佳适配效果。', finisherTitle:'职业终结技能', finisherLead:'第 4 / 8 / 12 轮释放。终结技通常承担爆发、斩杀、续航或残局功能。', specialTitle:'特殊倍率与机制规则', specialLead:'这里整理战斗测试页中的关键条件规则。最终胜者仍以链上 Arena 验证结果为准。', beastAdaptTitle:'神兽适配详细参数', beastAdaptLead:'最佳适配由职业 × 神兽决定。购买金额和质押金额不会解锁额外技能档位。', fatesTitle:'命格被动', fatesLead:'命格是 NFT 生成时获得的被动，不属于主动技能机制标签。', amountTitle:'金额与属性公式', amountLead:'金额只影响属性，不影响技能机制，不存在 1000/1000 或 10000/10000 技能档位。', owner:'归属', attr:'属性', starter:'起手', beast:'神兽', finisher:'终结', fateTypeFlag:'机制标记', fateTypeStat:'直接修改属性', details:'说明', releaseNote:'本页是规则说明和复现参考，不提交交易，也不改变链上胜负。' }
+    };
+    const phases = [
+      [['1 / 5 / 9','Attribute skill','Determined by fixed class element.'],['1 / 5 / 9','属性技能','由职业固定属性决定。']],
+      [['2 / 6 / 10','Class starter','Class rhythm: spear formation, assassination, formation, shield counter, ranged burst, curse, or shift.'],['2 / 6 / 10','职业起手技能','职业核心打法：枪阵、刺杀、阵法、盾反、远程爆发、咒印或错位。']],
+      [['3 / 7 / 11','Beast skill','Triggers general beast effects and best-pair effects if class matches beast.'],['3 / 7 / 11','神兽技能','触发神兽通用效果；职业与神兽最佳适配时触发额外效果。']],
+      [['4 / 8 / 12','Finisher','High-impact skill for burst, execute, sustain, counter or late judgment.'],['4 / 8 / 12','职业终结技能','高影响技能，承担爆发、斩杀、续航、反击或残局判定。']]
+    ];
+    const classes = [
+      {cn:'战将',en:'Zhanjiang',e:'地 / Earth',best:'黄龙 / Huanglong',atk:50,def:42,spd:152,hp:112,role:['Balanced spear pressure; Huanglong best-pair.','均衡枪阵压制，黄龙最佳适配。']},
+      {cn:'影刃',en:'Yingren',e:'风 / Wind',best:'白泽 / Baize',atk:56,def:19,spd:600,hp:62,role:['Speed assassination; damage scales with speed gap.','高速刺杀，伤害依赖速度差。']},
+      {cn:'方士',en:'Fangshi',e:'水 / Water',best:'玄武 / Xuanwu',atk:21,def:52,spd:292,hp:162,role:['Control and slow; deals more damage to slowed targets.','限制减速，目标越慢伤害越高。']},
+      {cn:'镇岳',en:'Zhenyue',e:'火 / Fire',best:'朱雀 / Zhuque',atk:18,def:86,spd:25,hp:235,role:['High defense, shields and counter.','高防护盾与盾反。']},
+      {cn:'神射',en:'Shenshe',e:'光 / Light',best:'白虎 / Baihu',atk:76,def:0,spd:330,hp:-10,role:['High attack, piercing and execute pressure.','高攻、穿透与终结爆发。']},
+      {cn:'御魂',en:'Yuhun',e:'暗 / Dark',best:'九尾 / Jiuwei',atk:51,def:35,spd:304,hp:100,role:['Curse, lifesteal and soul sustain.','咒印、吸血与魂契续航。']},
+      {cn:'幻影',en:'Huanying',e:'混沌 / Void',best:'帝江 / Dijiang',atk:32,def:30,spd:345,hp:86,role:['Hidden class; delay, shift and late judgment.','隐藏职业，延后、错位与残局优势。']}
+    ];
+    const skillNameEn = {
+          "地脉": "Earth Vein",
+          "山骨": "Mountain Bone",
+          "厚土": "Thick Earth",
+          "岩镇": "Stone Suppression",
+          "流云": "Flowing Cloud",
+          "疾行": "Swift Step",
+          "风切": "Wind Cut",
+          "回身": "Backstep",
+          "寒潮": "Cold Tide",
+          "潮生": "Rising Tide",
+          "水镜": "Water Mirror",
+          "迟水": "Slowing Water",
+          "赤焰甲": "Red Flame Armor",
+          "朱火": "Vermilion Flame",
+          "燎原": "Wildfire",
+          "火羽": "Fire Feather",
+          "神辉": "Divine Radiance",
+          "破晓": "Dawn Break",
+          "明镜": "Bright Mirror",
+          "裁光": "Light Judgment",
+          "蚀魂": "Soul Erosion",
+          "暗蚀": "Dark Corrosion",
+          "夜行": "Night Walk",
+          "魂饮": "Soul Drink",
+          "错相": "Phase Shift",
+          "归墟": "Return to the Abyss",
+          "无序": "Disorder",
+          "裂隙": "Rift",
+          "定影枪": "Shadow-Fixing Spear",
+          "龙压阵": "Dragon Pressure Formation",
+          "破军踏": "Pojun Trample",
+          "背袭": "Backstab",
+          "破阵刃": "Formation-Breaking Blade",
+          "断息": "Breath Sever",
+          "玄武阵": "Xuanwu Formation",
+          "缚岳阵": "Mountain-Binding Formation",
+          "迟水符": "Slowing Water Talisman",
+          "朱雀盾反": "Zhuque Counter-Shield",
+          "镇天壁": "Heaven-Suppressing Wall",
+          "赤羽守": "Red Feather Guard",
+          "贯日矢": "Sun-Piercing Arrow",
+          "白虎穿云": "Baihu Cloud-Piercer",
+          "破咒箭": "Curse-Breaking Arrow",
+          "九尾咒印": "Jiuwei Curse Seal",
+          "摄魂幡": "Soul-Capturing Banner",
+          "锁魂灯": "Soul-Locking Lamp",
+          "无面步": "Faceless Step",
+          "虚实界": "Realm of Real and False",
+          "断序印": "Order-Severing Seal",
+          "地脉龙威": "Earth-Vein Dragon Might",
+          "万灵识破": "All-Spirit Insight",
+          "北冥甲": "North Abyss Armor",
+          "赤羽涅火": "Red Feather Nirvana Flame",
+          "裂空裁骨": "Sky-Rending Bone Judgment",
+          "魂契": "Soul Pact",
+          "无相断序": "Formless Order Severance",
+          "万岳贯枪": "Ten-Thousand-Mountain Spear",
+          "黄龙崩阵": "Huanglong Formation Breaker",
+          "山河定杀": "Mountain-River Final Kill",
+          "绝影杀": "Shadowless Kill",
+          "双刃追魂": "Twin-Blade Soul Chase",
+          "白泽裂隙": "Baize Rift",
+          "北海封界": "North-Sea Boundary Seal",
+          "真武归流": "Zhenwu Returning Flow",
+          "水镜镇符": "Water-Mirror Suppression Talisman",
+          "朱雀镇岳": "Zhuque Mountain Suppression",
+          "天火反戈": "Heavenfire Counterstrike",
+          "不灭火羽": "Undying Fire Feather",
+          "落星矢": "Falling-Star Arrow",
+          "白虎裁决": "Baihu Judgment",
+          "连珠终矢": "Linked Final Arrows",
+          "三魂咒爆": "Three-Soul Curse Burst",
+          "万鬼归幡": "Ten-Thousand-Ghost Banner Return",
+          "断魄": "Soul Sever",
+          "万象归空": "All Forms Return to Void",
+          "断相裁": "Phase-Severing Judgment",
+          "归影": "Return Shadow"
+    };
+    function S(owner, name, m, tags, zh, en){return {owner,nameZh:name,nameEn:skillNameEn[name]||name,m,tags,zh,en};}
+    const attrSkills = [
+      S('地 / Earth','地脉',.88,['antiBurst','shield'],'88%伤害；获得一次抗爆发，并获得小护盾。','88% damage; gains one anti-burst and a small shield.'), S('地 / Earth','山骨',.72,['shield'],'72%伤害；获得6%生命护盾。','72% damage; gains a shield equal to 6% max HP.'), S('地 / Earth','厚土',.88,['antiBurst','antiDelayShift'],'88%伤害；抗爆发并获得一次延后抗性。','88% damage; gains anti-burst and one anti-delay.'), S('地 / Earth','岩镇',.86,['blockInitiative'],'86%伤害；若目标更快，封锁其下一次先手机制。','86% damage; if target is faster, blocks its next initiative mechanism.'),
+      S('风 / Wind','流云',.76,['antiSlow','shield'],'76%伤害；获得一次减速免疫和小护盾。','76% damage; gains one anti-slow and a small shield.'), S('风 / Wind','疾行',.68,['initiative','speedUp'],'68%伤害；速度+12%。','68% damage; speed +12%.'), S('风 / Wind','风切',.84,['blockDefense'],'84%伤害；封锁目标下一次防御机制。','84% damage; blocks target’s next defense mechanism.'), S('风 / Wind','回身',.74,['antiBurst','counterControl'],'74%伤害；获得一次抗爆发，并化解一次反击。','74% damage; gains anti-burst and cancels one counter.'),
+      S('水 / Water','寒潮',.65,['slow'],'65%伤害；目标速度-7%。','65% damage; target speed -7%.'), S('水 / Water','潮生',.62,['restore'],'62%伤害；恢复4%生命。','62% damage; restores 4% max HP.'), S('水 / Water','水镜',.70,['counterControl'],'70%伤害；化解一次反击。','70% damage; cancels one counter.'), S('水 / Water','迟水',.80,['counterControl'],'80%伤害；若自己更快，封锁目标盾反。','80% damage; if faster, blocks target counter.'),
+      S('火 / Fire','赤焰甲',.70,['antiBurst','antiCombo'],'70%伤害；下次受击扰乱攻击者爆发/连击。','70% damage; next time hit, disrupts attacker burst/combo.'), S('火 / Fire','朱火',.78,['shield'],'78%伤害；若防御更高，获得小护盾。','78% damage; if defense is higher, gains a small shield.'), S('火 / Fire','燎原',.78,['blockHeal'],'78%伤害；若目标血更低，封锁回复。','78% damage; if target HP% is lower, blocks healing.'), S('火 / Fire','火羽',.66,['antiBurst'],'66%伤害；获得一次抗爆发。','66% damage; gains one anti-burst.'),
+      S('光 / Light','神辉',.92,['blockDefense'],'92%伤害；照破目标防御机制。','92% damage; breaks target defense mechanism.'), S('光 / Light','破晓',1.02,['burst'],'102%伤害；首次释放额外+10%，即112%。','102% damage; first cast gains +10%, becoming 112%.'), S('光 / Light','明镜',.82,['cleanse'],'82%伤害；免疫一次削弱。','82% damage; immune to one weaken.'), S('光 / Light','裁光',.88,['blockCurse'],'88%伤害；封锁目标咒印/吸血。','88% damage; blocks curse/lifesteal.'),
+      S('暗 / Dark','蚀魂',.92,['restore'],'92%伤害；吸血25%。','92% damage; lifesteals 25% of damage.'), S('暗 / Dark','暗蚀',.82,['weaken'],'82%伤害；削弱目标攻击8%。','82% damage; target attack -8%.'), S('暗 / Dark','夜行',.96,['curse'],'96%伤害；若血量百分比更低，叠咒印。','96% damage; if HP% is lower, applies curse.'), S('暗 / Dark','魂饮',.86,['restore'],'86%伤害；若目标有咒印，额外吸血。','86% damage; additional lifesteal if target is cursed.'),
+      S('混沌 / Void','错相',.82,['delayShift'],'82%伤害；目标下一次附加机制错位。','82% damage; shifts target’s next extra mechanism.'), S('混沌 / Void','归墟',.82,['antiDelayShift','tieBias'],'82%伤害；获得延后抗性和残局优势。','82% damage; gains anti-delay and tie bias.'), S('混沌 / Void','无序',.90,['cleanse'],'90%伤害；清除自身一个延后机制。','90% damage; cleanses one self delay.'), S('混沌 / Void','裂隙',.88,['blockBeast'],'88%伤害；目标下一次神兽机制延后。','88% damage; delays target’s next beast mechanism.')
+    ];
+    const starterSkills = [
+      S('战将 / Zhanjiang','定影枪',.95,['blockInitiative'],'95%伤害；若目标更快，封锁先手。','95% damage; if target is faster, blocks initiative.'), S('战将 / Zhanjiang','龙压阵',.93,['blockInitiative','antiBurst','antiDelayShift'],'93%伤害；封锁爆发，获得抗爆发和一次抗延后。','93% damage; blocks burst, gains anti-burst and anti-delay.'), S('战将 / Zhanjiang','破军踏',.97,['blockDefense'],'97%伤害；封锁目标护盾/盾势。','97% damage; blocks shield/defense stance.'),
+      S('影刃 / Yingren','背袭',.82,['burst','initiative'],'更快时82%，否则56%；之后仍可吃影刃√速度差。','82% when faster, otherwise 56%; still benefits from Yingren speed-gap scaling.'), S('影刃 / Yingren','破阵刃',.70,['blockDefense'],'70%伤害；封锁法阵/护盾。','70% damage; blocks formation/shield.'), S('影刃 / Yingren','断息',.68,['blockHeal'],'68%伤害；封锁回复/吸血。','68% damage; blocks heal/lifesteal.'),
+      S('方士 / Fangshi','玄武阵',.70,['shield','blockDefense'],'70%伤害；获得攻击70%护盾，并封锁目标护盾/防御机制。','70% damage; gains shield based on 70% attack and blocks target defense/shield.'), S('方士 / Fangshi','缚岳阵',1.03,['counterControl','shield','blockDefense'],'103%伤害；封锁盾反与护盾/防御机制，并获得小护盾。','103% damage; blocks counter and defense/shield, gains small shield.'), S('方士 / Fangshi','迟水符',.96,['slow'],'96%伤害；目标速度-15%。','96% damage; target speed -15%.'),
+      S('镇岳 / Zhenyue','朱雀盾反',0,['counter'],'姿态技能；获得中强盾反，下次受击反击并抵消爆发。','Stance skill; prepares a medium counter and cancels burst on next hit.'), S('镇岳 / Zhenyue','镇天壁',.66,['lifeSave','shield'],'66%伤害；本轮死亡延后，并获得7%生命护盾。','66% damage; delays death this round and gains 7% HP shield.'), S('镇岳 / Zhenyue','赤羽守',.80,['antiCombo','antiBurst'],'80%伤害；抵消一次连击/追击，并获得抗爆发。','80% damage; cancels one combo/chase and gains anti-burst.'),
+      S('神射 / Shenshe','贯日矢',1.16,['burst'],'首次116%，之后96%。','116% first cast, then 96%.'), S('神射 / Shenshe','白虎穿云',1.04,['blockDefense','trueDamage'],'104%伤害；封锁护盾/法阵，并小幅追加穿云真实伤害。','104% damage; blocks shield/formation and adds small true damage.'), S('神射 / Shenshe','破咒箭',1.08,['blockCurse','cleanse'],'108%伤害；封锁咒印叠层，并清除自身咒印。','108% damage; blocks curse stacking and cleanses self curse.'),
+      S('御魂 / Yuhun','九尾咒印',.90,['curse'],'90%伤害；叠1层咒印，3层咒爆。','90% damage; applies one curse stack, 3 stacks can burst.'), S('御魂 / Yuhun','摄魂幡',.98,['restore'],'98%伤害；吸血32%。','98% damage; lifesteals 32%.'), S('御魂 / Yuhun','锁魂灯',.88,['blockInitiative'],'88%伤害；封锁连击/破阵/爆发节奏。','88% damage; blocks combo/break/burst rhythm.'),
+      S('幻影 / Huanying','无面步',.86,['delayShift'],'86%伤害；目标下一次攻击/防御/回复机制轻度错位。','86% damage; lightly shifts target’s next attack/defense/heal mechanism.'), S('幻影 / Huanying','虚实界',.80,['shield','antiBurst'],'80%伤害；获得护盾和抗爆发。','80% damage; gains shield and anti-burst.'), S('幻影 / Huanying','断序印',.90,['blockBeast','cleanse'],'90%伤害；封锁目标神兽机制，并清除自身一个延后。','90% damage; blocks target beast mechanism and cleanses one self delay.')
+    ];
+    const beastSkills = [
+      S('黄龙 / Huanglong','地脉龙威',1.12,['beastBond'],'适配战将：下次终结技×1.18，获得7%生命护盾；通用抗爆发。','Best with Zhanjiang: next finisher ×1.18 and 7% HP shield; general anti-burst.'),
+      S('白泽 / Baize','万灵识破',1.22,['beastBond'],'通用封锁先手；影刃适配高速时封锁防御与回复，下次终结×1.05。','General initiative block; Yingren best-pair blocks defense/heal when faster and next finisher ×1.05.'),
+      S('玄武 / Xuanwu','北冥甲',.76,['beastBond'],'通用护盾；方士适配获得8.5%生命护盾、2%回血、反击免疫、抗爆发。','General shield; Fangshi best-pair gains 8.5% HP shield, 2% heal, counter immunity and anti-burst.'),
+      S('朱雀 / Zhuque','赤羽涅火',1.00,['beastBond'],'镇岳适配获得盾反、抗爆发、5%生命羽盾；低血回血。','Zhenyue best-pair gains counter, anti-burst, 5% HP feather shield and low-HP heal.'),
+      S('白虎 / Baihu','裂空裁骨',1.06,['beastBond'],'神射适配下次终结×1.05；目标低于50%生命时追加攻击7%的真实伤害。','Shenshe best-pair next finisher ×1.05; below 50% target HP, adds true damage equal to 7% attack.'),
+      S('九尾 / Jiuwei','魂契',1.06,['beastBond'],'御魂适配叠1层咒印；通用按本次伤害吸血。','Yuhun best-pair applies one curse; general lifesteal from this hit.'),
+      S('帝江 / Dijiang','无相断序',.92,['beastBond'],'隐藏神兽；幻影适配获得错位、5%生命护盾、抗延后和残局优势。','Hidden beast; Huanying best-pair grants shift, 5% HP shield, anti-delay and tie bias.')
+    ];
+    const finishers = [
+      S('战将 / Zhanjiang','万岳贯枪',1.18,['blockInitiative'],'118%伤害；若目标更快，封锁先手。','118% damage; if target is faster, blocks initiative.'), S('战将 / Zhanjiang','黄龙崩阵',1.12,['blockDefense'],'112%伤害；清除目标护盾。','112% damage; clears target shield.'), S('战将 / Zhanjiang','山河定杀',1.08,['conditionalPower'],'108%伤害；若自身血量更低，提升至121%。','108% damage; if own HP% is lower, becomes 121%.'),
+      S('影刃 / Yingren','绝影杀',.76,['execute'],'基础76%；目标低于35%时108%。','Base 76%; 108% when target HP below 35%.'), S('影刃 / Yingren','双刃追魂',.78,['combo'],'78%伤害；若更快追加8%追击。','78% damage; if faster, adds 8% chase hit.'), S('影刃 / Yingren','白泽裂隙',.74,['blockHeal'],'74%伤害；封锁回复。','74% damage; blocks healing.'),
+      S('方士 / Fangshi','北海封界',1.14,['blockBeast'],'114%伤害；封锁目标下次神兽机制。','114% damage; blocks target’s next beast mechanism.'), S('方士 / Fangshi','真武归流',.94,['restore'],'94%伤害；恢复14%生命。','94% damage; restores 14% max HP.'), S('方士 / Fangshi','水镜镇符',1.08,['counterControl'],'108%伤害；封锁反击/盾反，并化解一次反击。','108% damage; blocks counter and cancels one counter.'),
+      S('镇岳 / Zhenyue','朱雀镇岳',1.10,['shield'],'110%伤害；获得11%生命护盾。','110% damage; gains 11% max HP shield.'), S('镇岳 / Zhenyue','天火反戈',1.04,['conditionalPower'],'104%伤害；若触发过盾反，提升至160%。','104% damage; if counter was triggered, becomes 160%.'), S('镇岳 / Zhenyue','不灭火羽',.94,['lifeSave','restore'],'94%伤害；低于42%时本轮保留1血并回血。','94% damage; below 42% HP, keeps 1 HP this round and heals.'),
+      S('神射 / Shenshe','落星矢',.94,['execute'],'基础94%；目标低于35%时125%。','Base 94%; 125% when target HP below 35%.'), S('神射 / Shenshe','白虎裁决',1.14,['blockHeal','trueDamage'],'114%伤害；封锁吸血/回复，并对低血目标追加裁决伤害。','114% damage; blocks healing/lifesteal and adds judgment damage to low-HP targets.'), S('神射 / Shenshe','连珠终矢',1.12,['combo'],'两段总计112%伤害。','Two-hit finisher totaling 112% damage.'),
+      S('御魂 / Yuhun','三魂咒爆',1.05,['curseBurst'],'105%伤害；按咒印层数追加真实伤害并清空。','105% damage; adds true damage based on curse stacks, then clears them.'), S('御魂 / Yuhun','万鬼归幡',.98,['restore'],'98%伤害；按咒印层数回血。','98% damage; heals based on curse stacks.'), S('御魂 / Yuhun','断魄',1.30,['blockLife'],'130%伤害；目标低血时封锁保命。','130% damage; blocks life-save on low-HP target.'),
+      S('幻影 / Huanying','万象归空',1.20,['trueDamage'],'120%伤害；若目标存在延后机制，清除一个并追加真实伤害。','120% damage; if target has a delay, clears one and adds true damage.'), S('幻影 / Huanying','断相裁',1.12,['delayShift'],'112%伤害；目标下一次附加机制错位。','112% damage; shifts target’s next extra mechanism.'), S('幻影 / Huanying','归影',1.00,['tieBias','restore'],'100%伤害；低血回血，并获得残局判定优势。','100% damage; low-HP heal and tie-bias advantage.')
+    ];
+    const fates = [
+      ['贪狼','Tanlang','攻击+7%，防御-2%','ATK +7%, DEF -2%','stat'], ['玄甲','Xuanjia','防御+7%，速度-2%','DEF +7%, SPD -2%','stat'], ['疾星','Jixing','速度+7%，生命-2%','SPD +7%, HP -2%','stat'], ['长生','Changsheng','生命+9%，攻击-2%','HP +9%, ATK -2%','stat'], ['破军','Pojun','首次攻击护盾/高防目标时封锁防御，并使本次倍率×1.03','First attack against shield/high defense blocks defense and this hit multiplier ×1.03','flag'], ['孤星','Guxing','速度高于目标时首次伤害+9%','If faster than target, first damage +9%','flag'], ['血战','Xuezhan','低于35%生命后，下一次终结技×1.17','Below 35% HP, next finisher ×1.17','flag'], ['镇魂','Zhenhun','前两次咒印叠层失败','First two curse applications fail','flag'], ['灵慧','Linghui','属性技能倍率×1.08','Attribute skill multiplier ×1.08','flag']
+    ];
+    const specialRows = [
+      ['Yingren speed gap','影刃√速度差','When Yingren is faster. Baize coefficient /150; non-Baize /180. Formula: multiplier × (1 + √speed gap / coefficient).','影刃速度高于目标时触发。白泽系数 /150，非白泽 /180。公式：倍率 × (1 + √速度差 / 系数)。'],
+      ['Fangshi water follow-up','方士水势追击','Fangshi deals more damage to slowed targets. Normal cap +36%; Chishu chain cap +24%.','方士攻击被减速目标时增伤。普通上限 +36%；迟水符链上限 +24%。'],
+      ['Best-pair resonance','最佳适配共鸣','Damage skills gain +3% when class uses its best beast. Shenshe+Baihu and Huanying+Dijiang keep an extra +2%.','职业携带最佳神兽时，造成伤害技能获得 +3%；神射+白虎、幻影+帝江额外保留 +2%。'],
+      ['Yingren + Baize callback','影刃+白泽回调','Damage skills ×0.92; speed-gap coefficient improves to /150; Baize chase finisher buff ×1.05.','造成伤害技能 ×0.92；速度差系数优化为 /150；白泽追猎终结强化 ×1.05。'],
+      ['Zhanjiang + Huanglong','战将+黄龙','Best-pair +3% plus Zhanjiang-Huanglong exclusive +3%; Huanglong can make next finisher ×1.18.','最佳适配 +3% 外，战将黄龙专属额外 +3%；黄龙可使下次终结 ×1.18。'],
+      ['Zhenyue + Zhuque','镇岳+朱雀','Overall combo callback ×0.92, while Zhuque still provides counter, anti-burst and feather shield.','整体组合回调 ×0.92，但朱雀仍提供盾反、抗爆发和羽盾。'],
+      ['Yuhun + Jiuwei','御魂+九尾','Sustain callback ×0.94; Jiuwei bond applies curse and lifesteals from this hit.','续航回调 ×0.94；九尾魂契叠咒印并按本次伤害吸血。'],
+      ['Fangshi Chishu chain','方士迟水符减速链','All Fangshi cards carrying Chishu Talisman: global skill multiplier ×0.94; Hanchao slow reduced; Beihai/Shuijing/Zhenwu have additional callbacks.','所有方士携带迟水符时：全技能倍率 ×0.94；寒潮减速降低；北海/水镜/真武有分级额外回调。'],
+      ['Bad Fangshi-Xuanwu type','方士玄武坏卡型','Fangshi/Xuanwu + Hanchao + Xuanwu Formation + Zhenwu + Pojun: all skill multipliers ×0.92; Xuanwu shield and heal reduced.','方士/玄武 + 寒潮 + 玄武阵 + 真武归流 + 破军：全技能倍率 ×0.92；玄武护盾和回血降低。'],
+      ['Pojun fate','破军命格','First attack into shield/high defense blocks defense/shield and multiplier ×1.03.','首次攻击护盾/高防目标时封锁防御/护盾，并使本次倍率 ×1.03。'],
+      ['No class-vs-class global multiplier','无职业对阵全局倍率','Class matchup multipliers were removed; counters now come from concrete skills and mechanism blocks.','已移除职业对阵直接增减伤；克制由具体技能和机制封锁触发。']
+    ];
+    const beastRows = [
+      ['Huanglong','黄龙','Zhanjiang / 战将','112%','General anti-burst. Best pair: extra anti-burst, 7% HP shield, next finisher ×1.18, extra +3% damage-skill multiplier.','通用抗爆发；战将适配额外抗爆发、7%生命护盾、下次终结 ×1.18，并额外 +3% 伤害技能倍率。'],
+      ['Baize','白泽','Yingren / 影刃','122%','Blocks initiative. Yingren best-pair: when faster, blocks defense and heal, next finisher ×1.05; damage skills ×0.92 callback.','封锁先手；影刃适配高速时封锁防御与回复，下次终结 ×1.05；伤害技能 ×0.92 回调。'],
+      ['Xuanwu','玄武','Fangshi / 方士','76%','General shield. Fangshi best-pair: 8.5% HP shield, 2% heal, counter immunity, anti-burst.','通用护盾；方士适配获得8.5%生命护盾、2%回血、反击免疫、抗爆发。'],
+      ['Zhuque','朱雀','Zhenyue / 镇岳','100%','Zhenyue best-pair: counter, anti-burst, 5% HP feather shield; low-HP heal.','镇岳适配获得盾反、抗爆发、5%生命羽盾；低血回血。'],
+      ['Baihu','白虎','Shenshe / 神射','106%','When faster, blocks defense/shield. Shenshe best-pair: next finisher ×1.05 and low-HP target true damage = 7% attack.','速度高于目标时封锁防御/护盾；神射适配下次终结 ×1.05，低血目标追加攻击7%的真实伤害。'],
+      ['Jiuwei','九尾','Yuhun / 御魂','106%','General lifesteal. Yuhun best-pair applies curse; finisher bonus was removed.','通用吸血；御魂适配叠咒印；旧版终结额外增伤已回收。'],
+      ['Dijiang','帝江','Huanying / 幻影','92%','Hidden beast. General shift. Huanying best-pair gains anti-delay, 5% HP shield and tie bias.','隐藏神兽；通用错位；幻影适配获得抗延后、5%生命护盾和残局优势。']
+    ];
+    function table(headers, rows, cls='skill-data-table'){
+      return `<div class="table-scroll"><table class="${cls}"><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    function tags(list, lang){ return (list||[]).map(k=>`<span class="mech-pill" title="${esc((mechDesc[k]||['',''])[lang==='en'?0:1])}">${esc((mechLabels[k]||[k,k])[lang==='en'?0:1])}</span>`).join(''); }
+    function skillRows(skills, lang){ return skills.map(s=>{ const name = lang==='en' ? s.nameEn : s.nameZh; const alt = lang==='en' ? s.nameZh : s.nameEn; return `<tr><td>${esc(s.owner)}</td><td><b>${esc(name)}</b><small>${esc(alt)}</small></td><td>${pct(s.m)}</td><td>${tags(s.tags, lang)}</td><td>${esc(lang==='en'?s.en:s.zh)}</td></tr>`; }).join(''); }
+    function render(){
+      const lang=getLang(), tr=T[lang], zh=lang==='zh';
+      document.querySelectorAll('[data-skill-i18n]').forEach(el=>{ const k=el.dataset.skillI18n; if(tr[k]) el.textContent=tr[k]; });
+      const phaseRows = phases.map(p=>{ const v=p[zh?1:0]; return `<tr><td><b>${esc(v[0])}</b></td><td>${esc(v[1])}</td><td>${esc(v[2])}</td></tr>`; }).join('');
+      const mechRows = Object.keys(mechLabels).map((k,i)=>`<tr><td>${i+1}</td><td><code>${esc(k)}</code></td><td><b>${esc(mechLabels[k][zh?1:0])}</b></td><td>${esc(mechDesc[k][zh?1:0])}</td></tr>`).join('');
+      const classRows = classes.map(c=>`<tr><td><b>${zh?c.cn:c.en}</b><small>${zh?c.en:c.cn}</small></td><td>${esc(c.e)}</td><td>${esc(c.best)}</td><td>+${c.atk}</td><td>${c.def>=0?'+':''}${c.def}</td><td>+${c.spd}</td><td>${c.hp>=0?'+':''}${c.hp}</td><td>${esc(c.role[zh?1:0])}</td></tr>`).join('');
+      const special = specialRows.map(r=>`<tr><td><b>${esc(zh?r[1]:r[0])}</b></td><td>${esc(zh?r[3]:r[2])}</td></tr>`).join('');
+      const beastAdapt = beastRows.map(r=>`<tr><td><b>${esc(zh?r[1]:r[0])}</b><small>${esc(zh?r[0]:r[1])}</small></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(zh?r[5]:r[4])}</td></tr>`).join('');
+      const fateRows = fates.map(f=>`<tr><td><b>${esc(zh?f[0]:f[1])}</b><small>${esc(zh?f[1]:f[0])}</small></td><td>${esc(zh?f[2]:f[3])}</td><td>${esc(f[4]==='flag'?tr.fateTypeFlag:tr.fateTypeStat)}</td></tr>`).join('');
+      const formulaRows = zh ? [
+        ['普通伤害公式','伤害 = floor(攻击 × [0.4 + 0.6 × 120/(120+防御)] × 技能倍率)，最低 1 点。'],
+        ['倍率结算顺序','基础倍率 → 技能名特殊条件 → 具体卡型修正 → 职业神兽修正 → 命格 → 影刃√速度差 → 最佳适配共鸣 → 破军 → 伤害。'],
+        ['胜负判定','死亡状态优先；否则比较 HP + 残局优势；再比较先手。']
+      ] : [
+        ['Normal damage','damage = floor(attack × [0.4 + 0.6 × 120/(120+defense)] × skill multiplier), minimum 1.'],
+        ['Multiplier order','Base multiplier → skill-specific condition → concrete card-type adjustment → class/beast adjustment → fate → Yingren speed gap → best-pair resonance → Pojun → damage.'],
+        ['Winner judgment','Death state first; otherwise compare HP + tie bias; then initiative tie-break.']
+      ];
+      const amountRows = zh ? [
+        ['购买金额','攻击力','攻击 = 120 + 随机0~20 + √购买 + 职业攻击'], ['质押金库均值','防御力','防御 = 10 + 随机0~5 + √质押 + 职业防御'], ['技能机制','不受金额影响','没有金额触发的技能档位或隐藏倍率']
+      ] : [
+        ['Buy amount','Attack','ATK = 120 + random 0~20 + √buy + class ATK'], ['Average stake','Defense','DEF = 10 + random 0~5 + √stake + class DEF'], ['Skill mechanisms','Not affected by amount','No funding-triggered skill tiers or hidden multiplier brackets']
+      ];
+      $('#skillGuideContent').innerHTML = `
+        <section id="flow" class="panel reveal in"><div class="panel-head"><h2>${esc(tr.phaseTitle)}</h2><span class="status-dot">12 rounds</span></div><p class="guide-small">${esc(tr.phaseLead)}</p>${table(tr.phaseCols, phaseRows)}</section>
+        <section class="panel reveal in"><div class="panel-head"><h2>${esc(tr.formulaTitle)}</h2><span class="status-dot">On-chain</span></div><p class="guide-small">${esc(tr.formulaLead)}</p>${table([tr.details, ''], formulaRows.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td></tr>`))}</section>
+        <section id="mechanisms" class="panel reveal in"><div class="panel-head"><h2>${esc(tr.mechanismTitle)}</h2><span class="status-dot">30 tags</span></div><p class="guide-small">${esc(tr.mechanismLead)}</p>${table(['#','Tag','Name',tr.details], mechRows)}</section>
+        <section class="panel reveal in"><div class="panel-head"><h2>${esc(tr.classTitle)}</h2><span class="status-dot">7 classes</span></div><p class="guide-small">${esc(tr.classLead)}</p>${table(tr.classCols, classRows)}</section>
+        <section id="skills" class="skill-table-stack">
+          <article class="panel reveal in"><div class="panel-head"><h2>${esc(tr.attrTitle)}</h2><span class="status-dot">${attrSkills.length}</span></div><p class="guide-small">${esc(tr.attrLead)}</p>${table(tr.skillTableCols, skillRows(attrSkills, lang))}</article>
+          <article class="panel reveal in"><div class="panel-head"><h2>${esc(tr.starterTitle)}</h2><span class="status-dot">${starterSkills.length}</span></div><p class="guide-small">${esc(tr.starterLead)}</p>${table(tr.skillTableCols, skillRows(starterSkills, lang))}</article>
+          <article class="panel reveal in"><div class="panel-head"><h2>${esc(tr.beastTitle)}</h2><span class="status-dot">${beastSkills.length}</span></div><p class="guide-small">${esc(tr.beastLead)}</p>${table(tr.skillTableCols, skillRows(beastSkills, lang))}</article>
+          <article class="panel reveal in"><div class="panel-head"><h2>${esc(tr.finisherTitle)}</h2><span class="status-dot">${finishers.length}</span></div><p class="guide-small">${esc(tr.finisherLead)}</p>${table(tr.skillTableCols, skillRows(finishers, lang))}</article>
+        </section>
+        <section id="special" class="panel reveal in"><div class="panel-head"><h2>${esc(tr.specialTitle)}</h2><span class="status-dot">Rules</span></div><p class="guide-small">${esc(tr.specialLead)}</p>${table([tr.details, ''], special)}</section>
+        <section class="panel reveal in"><div class="panel-head"><h2>${esc(tr.beastAdaptTitle)}</h2><span class="status-dot">Beasts</span></div><p class="guide-small">${esc(tr.beastAdaptLead)}</p>${table([tr.beast, zh?'最佳职业':'Best class', zh?'神兽技倍率':'Beast multiplier', tr.details], beastAdapt)}</section>
+        <section id="fates" class="panel reveal in"><div class="panel-head"><h2>${esc(tr.fatesTitle)}</h2><span class="status-dot">9</span></div><p class="guide-small">${esc(tr.fatesLead)}</p>${table([zh?'命格':'Fate', tr.details, zh?'类型':'Type'], fateRows)}</section>
+        <section class="panel reveal in"><div class="panel-head"><h2>${esc(tr.amountTitle)}</h2><span class="status-dot">Stats only</span></div><p class="guide-small">${esc(tr.amountLead)}</p>${table([zh?'金额来源':'Source', zh?'影响':'Effect', zh?'公式':'Formula'], amountRows.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`))}<div class="notice-card skill-release-note"><p>${esc(tr.releaseNote)}</p></div></section>
+      `;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      render();
+      $('#langToggle')?.addEventListener('click', () => setTimeout(render, 40));
+      window.addEventListener('storage', e => { if(e.key==='goldhavenLang') render(); });
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Goldhaven is a Uniswap v4 Hook launch, token staking vault, on-chain NFT RPG and daily arena protocol." />
+  <title>Goldhaven | Ink-born On-chain Arena</title>
+
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="home">
+  <div class="paper-grain" aria-hidden="true"></div>
+  <div class="ink-wash wash-a" aria-hidden="true"></div>
+  <div class="ink-wash wash-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Goldhaven home"><img src="assets/goldhaven-logo-512.png" alt="" /><span>Goldhaven</span></a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" data-nav="home" data-i18n="navHome">Home</a>
+        <a href="app.html" data-nav="app" data-i18n="navMintStake">Mint & Stake</a>
+        <a href="arena.html" data-nav="arena" data-i18n="navArena">Arena</a>
+        <a href="market.html" data-nav="market" data-i18n="navMarket">NFT Market</a>
+        <a href="tools/battle-tester.html" data-i18n="navTester">Skill Guide</a>
+      </div>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="langToggle" type="button">中文</button>
+        <button class="wallet" id="connectWallet" type="button" data-i18n="connectWallet">Connect Wallet</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="home-main">
+    <section class="home-hero shell">
+      <div class="hero-copy reveal">
+        <div class="eyebrow" data-i18n="heroEyebrow">UNISWAP V4 HOOK · TOKEN STAKING · ON-CHAIN BATTLE RPG</div>
+        <h1 data-i18n="heroTitle">An ink-born protocol where Hook trades summon NFTs and daily arena rewards settle by code.</h1>
+        <p class="lead" data-i18n="heroLead">Goldhaven links a curve-launched token, class-and-beast NFTs, a token staking vault, and an on-chain elimination arena into one game economy.</p>
+        <div class="home-socials" aria-label="Goldhaven social links">
+          <span class="social-caption">Community</span>
+          <a class="social-pill" id="homeTwitter" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X / Twitter</a>
+          <a class="social-pill" id="homeTelegram" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a>
+        </div>
+        <div class="trust-row">
+          <span data-i18n="trustSupply">21M max supply</span>
+          <span data-i18n="trustTax">2% trade tax to arena vault</span>
+        </div>
+      </div>
+
+      <aside class="home-hero-panel reveal delay-1" aria-label="Random Goldhaven NFT image preview">
+        <div class="moon"></div>
+        <div class="ink-ridge"></div>
+        <article class="ink-card hero-card clean-card nft-showcase" id="homeNftShowcase">
+          <div class="card-top"><span data-i18n="homeShowcaseTag">NFT Gallery</span><span id="homeShowcaseIndex">—</span></div>
+          <a id="homeShowcaseLink" href="#" target="_blank" rel="noopener" class="showcase-image-link">
+            <img id="homeShowcaseImage" class="showcase-image" alt="Goldhaven NFT preview" />
+          </a>
+          <h3 id="homeShowcaseTitle">Goldhaven NFT</h3>
+          <p id="homeShowcaseCaption" data-i18n="homeShowcaseCaption">Random class × beast artwork from the live IPFS image set.</p>
+        </article>
+      </aside>
+    </section>
+
+    <section class="shell section protocol-overview">
+      <div class="section-copy reveal">
+        <div class="eyebrow" data-i18n="homeProtocolEyebrow">PROTOCOL MAP / 协议结构</div>
+        <h2 data-i18n="mapTitle">The product is split into three player surfaces.</h2>
+        <p data-i18n="mapText">Home explains the system. Mint & Stake handles user assets and token vault actions. Arena handles battle entry, vault information and rewards. Market handles NFT listings and purchases.</p>
+      </div>
+      <div class="flow reveal delay-1">
+        <div class="flow-node"><b>Hook</b><span data-i18n="flowHook">98% to curve reserve, 2% to arena vault</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><b>NFT</b><span data-i18n="flowNft">Minted above 50U, class × beast image mapping reserved</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><b>Vault</b><span data-i18n="flowVault">GHV token staking powers dividends and validator rights</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><b>Arena</b><span data-i18n="flowArena">NFT locks fight daily; empty rank rewards roll over</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer shell">
+    <div><b>Goldhaven</b><p data-i18n="footerText">Goldhaven on-chain protocol interface for Hook trading, NFT staking, daily arena battles and community rewards.</p></div>
+    <div class="footer-links"><a id="footerTwitter" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X / Twitter</a><a id="footerTelegram" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a><a href="tools/battle-tester.html">Skill Guide</a></div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="config/contracts.js"></script>
+  <script src="src/abi.js"></script>
+  <script src="app.js"></script>
+  <script src="src/web3.js"></script>
+  <script src="src/live-ui-fixes.js"></script>
+</body>
+</html>

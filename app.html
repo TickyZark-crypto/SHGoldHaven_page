@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Goldhaven live mint, trading, token staking and NFT management." />
+  <title>Goldhaven | Mint & Assets</title>
+
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="app">
+  <div class="paper-grain" aria-hidden="true"></div><div class="ink-wash wash-a" aria-hidden="true"></div><div class="ink-wash wash-b" aria-hidden="true"></div>
+  <header class="site-header"><nav class="nav shell" aria-label="Main navigation"><a class="brand" href="index.html"><img src="assets/goldhaven-logo-512.png" alt="" /><span>Goldhaven</span></a><button class="menu-toggle" id="menuToggle" type="button">☰</button><div class="nav-links" id="navLinks"><a href="index.html" data-nav="home" data-i18n="navHome">Home</a><a href="app.html" data-nav="app" data-i18n="navMintStake">Mint & Stake</a><a href="arena.html" data-nav="arena" data-i18n="navArena">Arena</a><a href="market.html" data-nav="market" data-i18n="navMarket">NFT Market</a><a href="tools/battle-tester.html" data-i18n="navTester">Skill Guide</a><a class="social-link" id="twitterLink" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X</a><a class="social-link" id="telegramLink" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a></div><div class="nav-actions"><button class="lang-toggle" id="langToggle" type="button">中文</button><button class="wallet" id="connectWallet" type="button" data-contract-action="connect" data-i18n="connectWallet">Connect Wallet</button></div></nav></header>
+
+  <main class="page-main shell">
+    <section class="page-title reveal"><div class="eyebrow" data-i18n="assetEyebrow">LIVE MINT / TRADE / STAKE / NFTS</div><h1 data-i18n="assetTitle">Goldhaven live asset console.</h1><p data-i18n="assetLead">Manage Hook buy/sell, Goldhaven Token staking, dividend claims, and your Goldhaven NFTs in one live asset console.</p></section>
+
+    <section class="module-stack contract-section">
+      <article class="panel reveal module-panel" id="tradeModule">
+        <div class="panel-head"><h2 data-i18n="assetTradeTitle">1. Buy / Sell Goldhaven</h2><span class="status-dot good" data-i18n="assetHookRouter">Hook + Router</span></div>
+        <div class="metric-grid live-stats-grid">
+          <div><span data-i18n="assetMyGoldhaven">My Goldhaven</span><b id="myGhvBalance">Connect wallet</b></div>
+          <div><span data-i18n="assetCurveVault">Curve ETH vault</span><b id="tradeCurveReserve">—</b></div>
+          <div><span data-i18n="assetArenaVault">Arena ETH vault</span><b id="tradeArenaVault">—</b></div>
+          <div><span data-i18n="assetMaxSupply">Max supply</span><b id="tradeMaxSupply">21,000,000 GHV</b></div>
+          <div><span data-i18n="assetCurrentMinted">Current minted</span><b id="tradeTotalMinted">—</b></div>
+          <div><span data-i18n="assetMintPrice">Mint price</span><b id="tradeMintPrice">—</b></div>
+          <div><span data-i18n="assetBurnPrice">Burn price</span><b id="tradeBurnPrice">—</b></div>
+          <div><span data-i18n="assetWallet">Wallet</span><b data-wallet-address>—</b></div>
+        </div>
+
+        <div class="trade-two-col">
+          <div class="trade-box ink-card">
+            <div class="trade-box-head"><h3 data-i18n="assetBuyMint">Buy / Mint</h3><span>ETH → GHV</span></div>
+            <label><span data-i18n="assetEthAmount">ETH amount</span><input id="tradeBuyEthAmount" type="number" min="0" step="0.001" value="0.01" /></label>
+            <div class="quick-row" aria-label="Buy amount shortcuts">
+              <button type="button" class="btn chip" data-fill-percent="buyEth" data-percent="2500">1/4</button>
+              <button type="button" class="btn chip" data-fill-percent="buyEth" data-percent="5000">1/2</button>
+              <button type="button" class="btn chip" data-fill-percent="buyEth" data-percent="7500">3/4</button>
+              <button type="button" class="btn chip" data-fill-percent="buyEth" data-percent="10000">All</button>
+            </div>
+            <div class="quote-card"><span data-i18n="assetEstimatedGhv">Estimated GHV</span><b id="quoteBuyGhvOut">—</b></div>
+            <div class="quote-card"><span data-i18n="assetArenaTax">2% arena tax</span><b id="quoteBuyTax">—</b></div>
+            <div class="quote-card"><span data-i18n="assetToCurve">98% to curve</span><b id="quoteBuyCurveEth">—</b></div>
+            <div class="quote-card"><span data-i18n="assetNftThreshold">NFT threshold</span><b id="quoteBuyNftStatus">—</b></div>
+            <label><span data-i18n="assetMinGhvOut">Minimum GHV out</span><input id="tradeBuyMinOut" type="number" min="0" step="0.000001" value="0" /></label>
+            <div class="action-row"><button class="btn line" type="button" data-contract-action="quoteHookBuy" data-i18n="assetQuote">Quote</button><button class="btn primary" type="button" data-contract-action="executeHookBuy" data-i18n="assetBuyMint">Buy / Mint</button></div>
+          </div>
+
+          <div class="trade-box ink-card">
+            <div class="trade-box-head"><h3 data-i18n="assetSellBurn">Sell / Burn</h3><span>GHV → ETH</span></div>
+            <label><span data-i18n="assetGhvAmount">GHV amount</span><input id="tradeSellGhvAmount" type="number" min="0" step="0.000001" value="0" /></label>
+            <div class="quick-row" aria-label="Sell amount shortcuts">
+              <button type="button" class="btn chip" data-fill-percent="sellGhv" data-percent="2500">1/4</button>
+              <button type="button" class="btn chip" data-fill-percent="sellGhv" data-percent="5000">1/2</button>
+              <button type="button" class="btn chip" data-fill-percent="sellGhv" data-percent="7500">3/4</button>
+              <button type="button" class="btn chip" data-fill-percent="sellGhv" data-percent="10000">All</button>
+            </div>
+            <div class="quote-card"><span data-i18n="assetEstimatedEth">Estimated ETH</span><b id="quoteSellEthOut">—</b></div>
+            <div class="quote-card"><span data-i18n="assetArenaTax">2% arena tax</span><b id="quoteSellTax">—</b></div>
+            <div class="quote-card"><span data-i18n="assetRawEth">Raw ETH unlocked</span><b id="quoteSellRawEth">—</b></div>
+            <div class="quote-card"><span data-i18n="assetCooldownAllowance">Cooldown / allowance</span><b id="quoteSellCooldown">—</b></div>
+            <label><span data-i18n="assetMinEthOut">Minimum ETH out</span><input id="tradeSellMinEth" type="number" min="0" step="0.000000000000000001" value="0" /></label>
+            <div class="action-row"><button class="btn line" type="button" data-contract-action="quoteHookSell" data-i18n="assetQuote">Quote</button><button class="btn line" type="button" data-contract-action="approveGhvForRouter" data-i18n="assetApprove">Approve</button><button class="btn ghost" type="button" data-contract-action="executeHookSell" data-i18n="assetSellBurn">Sell / Burn</button></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel reveal module-panel" id="stakingModule">
+        <div class="panel-head"><h2 data-i18n="assetStakeTitle">2. Goldhaven Token Staking</h2><span class="status-dot good">Vault</span></div>
+        <div class="metric-grid live-stats-grid">
+          <div><span data-i18n="assetMyStaked">My staked</span><b id="stakeMyAmount">Connect wallet</b></div>
+          <div><span data-i18n="assetMyAvg24h">My 24h average</span><b id="stakeMyAvg24h">—</b></div>
+          <div><span data-i18n="assetTotalStaked">Total staked</span><b id="stakeTotalAmount">—</b></div>
+          <div><span data-i18n="assetValidatorRight">Validator right</span><b id="stakeValidatorStatus">—</b></div>
+        </div>
+        <div class="trade-two-col staking-layout-clean">
+          <div class="trade-box ink-card stake-unstake-card">
+            <div class="trade-box-head"><h3 data-i18n="assetStakeUnstake">Stake / Unstake</h3><span data-i18n="assetWalletVaultBoth">Wallet ⇄ Vault</span></div>
+            <div class="stake-section">
+              <label><span data-i18n="assetStakeAmount">Stake amount</span><input id="stakeAmount" type="number" min="0" step="0.000001" value="0" /></label>
+              <div class="quick-row">
+                <button type="button" class="btn chip" data-fill-percent="stakeGhv" data-percent="2500">1/4</button>
+                <button type="button" class="btn chip" data-fill-percent="stakeGhv" data-percent="5000">1/2</button>
+                <button type="button" class="btn chip" data-fill-percent="stakeGhv" data-percent="7500">3/4</button>
+                <button type="button" class="btn chip" data-fill-percent="stakeGhv" data-percent="10000">All</button>
+              </div>
+              <div class="action-row"><button class="btn line" type="button" data-contract-action="approveGhvForVault" data-i18n="assetApprove">Approve</button><button class="btn primary" type="button" data-contract-action="stakeToken" data-i18n="assetStake">Stake</button></div>
+            </div>
+            <div class="stake-section separated">
+              <label><span data-i18n="assetUnstakeAmount">Unstake amount</span><input id="unstakeAmount" type="number" min="0" step="0.000001" value="0" /></label>
+              <div class="quick-row">
+                <button type="button" class="btn chip" data-fill-percent="unstakeGhv" data-percent="2500">1/4</button>
+                <button type="button" class="btn chip" data-fill-percent="unstakeGhv" data-percent="5000">1/2</button>
+                <button type="button" class="btn chip" data-fill-percent="unstakeGhv" data-percent="7500">3/4</button>
+                <button type="button" class="btn chip" data-fill-percent="unstakeGhv" data-percent="10000">All</button>
+              </div>
+              <div class="action-row"><button class="btn ghost" type="button" data-contract-action="unstakeToken" data-i18n="assetUnstake">Unstake</button></div>
+            </div>
+          </div>
+          <div class="trade-box ink-card dividend-claim-card">
+            <div class="trade-box-head"><h3 data-i18n="assetDividendClaimTitle">Dividend Claim</h3><span data-i18n="assetDividendClaimHint">Stake rewards</span></div>
+            <div class="claim-card clean-claim-card">
+              <div class="quote-card"><span data-i18n="assetPendingDividend">Pending dividend</span><b id="stakePendingDividend">—</b></div>
+              <div class="quote-card"><span data-i18n="assetEpochsToClaim">Epochs to claim</span><b id="stakePendingEpochs">—</b></div>
+            </div>
+            <p class="hint" data-i18n="assetDividendClaimDesc">Claimable epochs are scanned from the Vault and refreshed after every claim.</p>
+            <div class="action-row"><button class="btn line" type="button" data-contract-action="claimPendingDividends" data-i18n="assetClaimDividend">Claim Dividend</button></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel reveal module-panel" id="nftModule">
+        <div class="panel-head"><h2 data-i18n="assetNftTitle">3. My NFT Management</h2><span class="status-dot good">NFT + Vault</span></div>
+        <p class="hint" data-i18n="assetNftHint">NFT images are loaded directly from the class × beast image URI. Free NFTs can be sent, burned, listed or put into the arena. Arena NFTs show only Unlock. Listed NFTs show only Cancel Listing.</p>
+        <div class="nft-toolbar">
+          <label><span data-i18n="assetScanLimit">Scan limit</span><input id="nftScanLimit" type="number" min="1" max="3000" step="1" value="500" /></label>
+          <button class="btn line" type="button" data-contract-action="refreshMyNfts" data-i18n="assetRefreshNfts">Refresh My NFTs</button>
+        </div>
+        <div class="nft-grid live-nft-grid" id="myNftGrid" data-live-managed="1"><article class="empty-state"><h3>Connect wallet</h3><p>Connect your wallet to scan owned Goldhaven NFTs.</p></article></div>
+      </article>
+
+      <article class="panel contract-log-panel reveal"><div class="panel-head"><h2 data-i18n="txLog">Transaction Log</h2><span class="status-dot">DApp</span></div><div id="contractLog" class="contract-log"></div></article>
+    </section>
+  </main>
+
+  <footer class="footer shell"><div><b>Goldhaven</b><p data-i18n="liveFooter">Goldhaven on-chain asset console for trading, staking, NFT management, arena entry and rewards.</p></div><div class="footer-links"><a id="footerTwitter" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X</a><a id="footerTelegram" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a><a href="tools/battle-tester.html">Skill Guide</a></div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="config/contracts.js"></script>
+  <script src="src/abi.js"></script>
+  <script src="app.js"></script>
+  <script src="src/web3.js"></script>
+  <script src="src/live-ui-fixes.js"></script>
+</body>
+</html>

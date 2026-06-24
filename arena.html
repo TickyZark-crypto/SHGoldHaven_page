@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Goldhaven arena positions, battle history, and reward claims." />
+  <title>Goldhaven | Arena</title>
+
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="arena">
+  <div class="paper-grain" aria-hidden="true"></div><div class="ink-wash wash-a" aria-hidden="true"></div><div class="ink-wash wash-b" aria-hidden="true"></div>
+  <header class="site-header"><nav class="nav shell" aria-label="Main navigation"><a class="brand" href="index.html"><img src="assets/goldhaven-logo-512.png" alt="" /><span>Goldhaven</span></a><button class="menu-toggle" id="menuToggle" type="button">☰</button><div class="nav-links" id="navLinks"><a href="index.html" data-nav="home" data-i18n="navHome">Home</a><a href="app.html" data-nav="app" data-i18n="navMintStake">Mint & Stake</a><a href="arena.html" data-nav="arena" data-i18n="navArena">Arena</a><a href="market.html" data-nav="market" data-i18n="navMarket">NFT Market</a><a href="tools/battle-tester.html" data-i18n="navTester">Skill Guide</a><a class="social-link" id="twitterLink" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X</a><a class="social-link" id="telegramLink" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a></div><div class="nav-actions"><button class="lang-toggle" id="langToggle" type="button">中文</button><button class="wallet" id="connectWallet" type="button" data-i18n="connectWallet">Connect Wallet</button></div></nav></header>
+  <main class="page-main shell">
+    <section class="page-title reveal"><div class="eyebrow" data-i18n="arenaLiveEyebrow">LIVE ARENA / 竞技场</div><h1 data-i18n="arenaLiveTitle">My arena cards, battle progress, and rewards.</h1><p data-i18n="arenaLiveLead">View the cards you put into the arena, their attributes and images, the current round state, your battle history, and your claimable arena reward after settlement.</p></section>
+    <section class="vault-strip reveal arena-live-strip">
+      <div><span data-i18n="arenaContractBalance">Current arena reward balance</span><b id="arenaContractBalance">—</b></div>
+      <div><span data-i18n="arenaTodayFunding">Next arena reward</span><b id="onchainTodayFunding">—</b></div>
+      <div><span data-i18n="arenaHookVault">Hook arena vault</span><b id="onchainArenaVault">—</b></div>
+      <div><span data-i18n="arenaActiveArena">Active arena</span><b id="arenaActiveAddress">—</b></div>
+      <div><span data-i18n="arenaMyPendingReward">My pending reward</span><b id="arenaMyReward">—</b></div>
+      <div><span data-i18n="arenaMyBattleReward">Battle reward</span><b id="arenaMyBattleReward">—</b></div>
+      <div><span data-i18n="arenaMyValidatorReward">Validator reward</span><b id="arenaMyValidatorReward">—</b></div>
+    </section>
+    <section class="panel reveal">
+      <div class="panel-head"><h2 data-i18n="arenaProgress">Arena progress</h2><span class="status-dot" id="arenaStatusTag">Live</span></div>
+      <div class="metric-grid live-stats-grid">
+        <div><span data-i18n="arenaRound">Round</span><b id="arenaRoundNow">—</b></div>
+        <div><span data-i18n="arenaRemaining">Current round remaining</span><b id="arenaRemainingNow">—</b></div>
+        <div><span data-i18n="arenaRoundVerifyProgress">Round verification</span><b id="arenaRoundVerifyProgress">—</b></div>
+        <div><span data-i18n="arenaStatusLabel">Status</span><b id="arenaFinishedNow">—</b></div>
+        <div><span data-i18n="arenaChampionLabel">Champion</span><b id="arenaChampionNow">—</b></div>
+      </div>
+      <div class="action-row"><button class="btn line" type="button" id="refreshArenaLive" data-i18n="arenaRefresh">Refresh Arena</button><button class="btn primary" type="button" id="claimBattleReward" data-i18n="arenaClaimBattleReward">Claim Battle Reward</button><button class="btn ghost" type="button" id="claimValidatorReward" data-i18n="arenaClaimValidatorReward">Claim Validator Reward</button><a class="btn line" href="app.html" data-i18n="arenaPutUnlock">Put / Unlock NFTs</a></div>
+      <p class="hint" id="arenaStatus" data-i18n="arenaStatusInitial">Connect wallet to show only your staked cards. Public arena progress can be viewed without connecting if an active arena exists.</p>
+    </section>
+    <section class="panel reveal arena-validator-panel">
+      <div class="panel-head"><h2 data-i18n="arenaValidatorPanelTitle">Validator operations</h2><span class="status-dot" id="arenaValidatorStatus">—</span></div>
+      <div class="metric-grid live-stats-grid">
+        <div><span data-i18n="arenaIsValidator">Validator right</span><b id="arenaIsValidatorNow">—</b></div>
+        <div><span data-i18n="arenaMyVerifyCount">My verifications</span><b id="arenaMyVerifyCount">—</b></div>
+        <div><span data-i18n="arenaVerifyReady">Verify button</span><b id="arenaVerifyReadyNow">—</b></div>
+        <div><span data-i18n="arenaNextRoundReady">Next round</span><b id="arenaNextRoundReadyNow">—</b></div>
+      </div>
+      <div class="progress-card">
+        <div class="progress-head"><span data-i18n="arenaRoundVerifyProgress">Round verification</span><b id="arenaRoundVerifyProgressText">—</b></div>
+        <div class="progress-track"><i id="arenaRoundVerifyBar"></i></div>
+      </div>
+      <div class="action-row">
+        <button class="btn primary" type="button" id="openDailyArena" data-i18n="arenaOpenDaily">Open Daily Arena</button>
+        <button class="btn ghost" type="button" id="verifyNextMatch" data-i18n="arenaVerifyNext">Verify Next Match</button>
+        <button class="btn line" type="button" id="advanceNextRound" data-i18n="arenaOpenNextRound">Open / Refresh Next Round</button>
+      </div>
+      <div id="arenaMatchVerifyList" class="battle-history compact-history"></div><p class="hint" id="arenaValidatorHint" data-i18n="arenaValidatorHint">Validators can open the arena, verify specific current-round matches concurrently, and claim validator rewards separately after settlement.</p>
+    </section>
+    <section class="panel reveal">
+      <div class="panel-head"><h2 data-i18n="arenaMyCards">My arena cards</h2><span class="status-dot" data-i18n="arenaVaultTag">Vault</span></div>
+      <div class="nft-toolbar"><label><span data-i18n="arenaFallbackScan">Fallback scan limit</span><input id="arenaScanLimit" type="number" min="1" max="5000" step="1" value="1000" /></label><button class="btn line" type="button" id="refreshMyArenaCards" data-i18n="arenaRefreshCards">Refresh My Cards</button></div>
+      <div class="nft-grid live-nft-grid" id="arenaCardsGrid"><article class="empty-state"><h3 data-i18n="arenaConnectTitle">Connect wallet</h3><p data-i18n="arenaConnectText">Connect to view the NFT cards you have locked into the arena vault.</p></article></div>
+    </section>
+    <section class="dashboard-grid arena-history-layout">
+      <article class="panel reveal">
+        <div class="panel-head"><h2 data-i18n="arenaHistoryTitle">My battle process / history</h2><span class="status-dot" data-i18n="arenaEventsTag">Events</span></div>
+        <div id="arenaHistory" class="battle-history"><article class="empty-state"><h3 data-i18n="arenaNoHistoryTitle">No history loaded</h3><p data-i18n="arenaNoHistoryText">Battle events will appear after an active arena is found.</p></article></div>
+      </article>
+      <article class="panel reveal delay-1">
+        <div class="panel-head"><h2 data-i18n="arenaSurvivorsTitle">Current survivors / Top 32</h2><span class="status-dot" data-i18n="arenaRoundTag">Round</span></div>
+        <div id="arenaRoundSnapshot" class="battle-history"><article class="empty-state"><h3 data-i18n="arenaNoRoundTitle">No active round</h3><p data-i18n="arenaNoRoundText">Current round queue is shown while running. After finish, top 32 card IDs and owners are shown here.</p></article></div>
+      </article>
+    </section>
+    <article class="panel contract-log-panel reveal"><div class="panel-head"><h2 data-i18n="txLog">Transaction Log</h2><span class="status-dot">DApp</span></div><div id="contractLog" class="contract-log"></div></article>
+  </main>
+  <footer class="footer shell"><div><b>Goldhaven</b><p data-i18n="marketFooter">Live Base Sepolia frontend. Contract addresses are configurable in config/contracts.js.</p></div><div class="footer-links"><a id="footerTwitter" href="https://x.com/SHGoldhaven" target="_blank" rel="noopener">X</a><a id="footerTelegram" href="https://t.me/+EacmH8gM5DgyNzE9" target="_blank" rel="noopener">Telegram</a><a href="tools/battle-tester.html">Skill Guide</a></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="config/contracts.js"></script>
+  <script src="src/abi.js"></script>
+  <script src="app.js"></script>
+  <script src="src/web3.js"></script>
+  <script src="src/live-ui-fixes.js"></script>
+</body>
+</html>
